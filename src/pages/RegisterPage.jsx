@@ -12,6 +12,7 @@ import {
   setPassword,
 } from "../redux/features/registerSlice";
 import { Link, useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 
 const RegisterPage = () => {
   const firstName = useSelector(selectFirstName);
@@ -45,8 +46,14 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-black flex items-center justify-center text-white px-4">
-      <div className="backdrop-blur-md bg-white/10 border border-white/20 rounded-2xl p-8 w-full max-w-md shadow-2xl">
+    <div className="min-h-screen bg-gradient-to-br  from-blackCustom via-indigoCustom to-blackCustom flex items-center justify-center text-white px-4">
+       <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, ease: "easeInOut" }}
+              className="w-full max-w-mdbackdrop-blur-md bg-white/10 border border-white/20 rounded-2xl p-8 max-w-md shadow-2xl"
+            >
+      <div className="">
         <h2 className="text-3xl font-bold text-white text-center mb-6">Register</h2>
         <form className="flex flex-col gap-4" onSubmit={handleRegister}>
           <input
@@ -83,7 +90,7 @@ const RegisterPage = () => {
           />
           <button
             type="submit"
-            className="bg-purple-500 hover:bg-purple-600 text-white font-semibold py-2 rounded-lg mt-2 transition-all duration-300"
+            className=" bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-semibold py-2 rounded-lg mt-2 transition-all duration-300"
           >
             Register
           </button>
@@ -95,6 +102,7 @@ const RegisterPage = () => {
           </Link>
         </p>
       </div>
+      </motion.div>
     </div>
   );
 };

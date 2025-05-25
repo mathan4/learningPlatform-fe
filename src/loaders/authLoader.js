@@ -3,7 +3,8 @@ import authServices from "../services/authServices";
 const authLoader = async () => {
     try {
         const response = await authServices.me();
-        return response.data;
+        const user= response.data
+        return {user}
     } catch (error) {
         return null;
     }

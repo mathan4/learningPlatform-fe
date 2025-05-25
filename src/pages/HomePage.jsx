@@ -151,7 +151,7 @@ const HomePage = () => {
       {/* How it Works Section */}
       <section className="bg-gradient-to-br from-black to-gray-900 py-20">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-semibold text-center mb-16 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400">
+          <h2 className="text-3xl font-semibold text-center mb-16 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-indigoCustom">
             How It Works
           </h2>
           <div className="space-y-12">
@@ -181,7 +181,7 @@ const HomePage = () => {
               <div key={idx} className="flex flex-col md:flex-row items-center gap-12">
                 {!imgFirst && (
                   <div className="md:w-1/2">
-                    <h3 className="text-2xl font-semibold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-blue-300 to-purple-300">
+                    <h3 className="text-2xl font-semibold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-blue-300 to-indigoCustom">
                       {title}
                     </h3>
                     <p className="text-gray-300">{text}</p>
@@ -192,7 +192,7 @@ const HomePage = () => {
                 </div>
                 {imgFirst && (
                   <div className="md:w-1/2">
-                    <h3 className="text-2xl font-semibold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-blue-300 to-purple-300">
+                    <h3 className="text-2xl font-semibold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-blue-300 to-indigoCustom">
                       {title}
                     </h3>
                     <p className="text-gray-300">{text}</p>
@@ -206,7 +206,7 @@ const HomePage = () => {
 
       {/* Testimonials Section */}
       <section className="container mx-auto px-4 py-20">
-        <h2 className="text-3xl font-semibold text-center mb-16 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400">
+        <h2 className="text-3xl font-semibold text-center mb-16 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-indigoCustom">
           What Our Users Say
         </h2>
         <motion.div
@@ -239,7 +239,7 @@ const HomePage = () => {
       {/* Mentor Statistics Section */}
       <section className="bg-gradient-to-br from-black to-gray-900 py-20">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl font-semibold mb-16 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400">
+          <h2 className="text-3xl font-semibold mb-16 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-indigoCustom">
             Become a Mentor
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -256,7 +256,7 @@ const HomePage = () => {
               <p className="text-gray-300">Average Mentor Rating</p>
             </div>
           </div>
-          <button className="mt-12 text-white border-purple-500 hover:bg-purple-500/20 hover:border-purple-400 px-8 py-3 rounded-full shadow-lg transition-all duration-300 border text-lg">
+          <button className="mt-12 text-white border-purple-500 hover:bg-purple-500/20 hover:border-indigoCustom px-8 py-3 rounded-full shadow-lg transition-all duration-300 border text-lg">
             <Briefcase className="mr-2 w-5 h-5" />
             Become a Mentor
           </button>

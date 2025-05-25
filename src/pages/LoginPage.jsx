@@ -1,9 +1,15 @@
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { selectEmail, selectPassword, setEmail, setPassword } from "../redux/features/loginSlice";
+import {
+  selectEmail,
+  selectPassword,
+  setEmail,
+  setPassword,
+} from "../redux/features/loginSlice";
 import authServices from "../services/authServices";
 import { toast } from "react-toastify";
 import { motion } from "framer-motion";
+import { setUserProfile } from "../redux/features/userSlice";
 
 const LoginPage = () => {
   const email = useSelector(selectEmail);
@@ -12,25 +18,45 @@ const LoginPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
 
-    authServices.login({ email, password })
-      .then((response) => {
-        toast.success(response.data.message);
-        dispatch(setEmail(""));
-        dispatch(setPassword(""));
-        setTimeout(() => {
-          navigate("/dashboard");
-        }, 500);
-      })
-      .catch((error) => {
-        toast.error(error.response.data.message);
-      });
+    try {
+      const response = await authServices.login({ email, password });
+
+      toast.success(response.data.message);
+      // Check if the response structure is different than expected
+
+      const userDetails=await authServices.me()
+     
+      const userData = userDetails.data;
+
+      dispatch(setEmail(""));
+      dispatch(setPassword(""));
+
+      dispatch(
+        setUserProfile({
+          firstName: userData.firstName,
+          lastName: userData.lastName ,
+          email: userData.email || "",
+          location: userData.location || "",
+          profilePicture: userData.profilePicture || "",
+          languagesKnown: userData.languagesKnown || [],
+        })
+      )
+
+      // Redirect after short delay
+      setTimeout(() => {
+        navigate("/dashboard");
+      }, 500);
+    } catch (error) {
+      toast.error("Login failed");
+      console.error(error);
+    }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-black flex items-center justify-center text-white px-4">
+    <div className="min-h-screen h-2/4 bg-gradient-to-br from-blackCustom via-indigoCustom to-blackCustom flex items-center justify-center text-white px-4">
       <motion.div
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
