@@ -27,8 +27,8 @@ const LoginPage = () => {
       toast.success(response.data.message);
       // Check if the response structure is different than expected
 
-      const userDetails=await authServices.me()
-     
+      const userDetails = await authServices.me();
+
       const userData = userDetails.data;
 
       dispatch(setEmail(""));
@@ -37,17 +37,23 @@ const LoginPage = () => {
       dispatch(
         setUserProfile({
           firstName: userData.firstName,
-          lastName: userData.lastName ,
+          lastName: userData.lastName,
           email: userData.email || "",
           location: userData.location || "",
           profilePicture: userData.profilePicture || "",
           languagesKnown: userData.languagesKnown || [],
         })
-      )
+      );
 
       // Redirect after short delay
       setTimeout(() => {
-        navigate("/dashboard");
+        if (userData.role === "student") {
+          navigate("/dashboard");
+        } else if (userData.role === "mentor") {
+          navigate("/mentor/dashboard");
+        } else if (userData.role === "admin") {
+          navigate("/admin/dashboard");
+        }
       }, 500);
     } catch (error) {
       toast.error("Login failed");

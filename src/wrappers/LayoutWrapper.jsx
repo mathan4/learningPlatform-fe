@@ -4,7 +4,7 @@ import NavBar from '../components/NavBarComponent';
 const LayoutWrapper = () => {
 
     const user = useLoaderData();
-
+    console.log(user)
     if (user) {
         if (user.role === 'admin') {
             return <Navigate to="/admin/dashboard" />

@@ -2,18 +2,19 @@ import { toast } from "react-toastify";
 import lessonServices from "../services/lessonService";
 
 const ScheduledLessonCard = ({ lesson, handleDelete }) => {
-  const { subject, startTime, mentorId, status, _id } = lesson;
-   
-  const handleCancel = async() => {
+  const { subject, startTime, mentorId, status, _id, meetingLink } = lesson;
+  console.log(lesson);
+
+  const handleCancel = async () => {
     try {
-    await lessonServices.cancelLesson(_id);
-    toast.success("Lesson cancelled!");
-    handleDelete(_id); 
-  } catch (err) {
-    toast.error("Failed to cancel lesson.");
-    console.error(err);
-  }
-  }
+      await lessonServices.cancelLesson(_id);
+      toast.success("Lesson cancelled!");
+      handleDelete(_id);
+    } catch (err) {
+      toast.error("Failed to cancel lesson.");
+      console.error(err);
+    }
+  };
 
   return (
     <div className="p-4 shadow-md rounded-lg flex flex-col sm:flex-row bg-gradient-to-b from-white to bg-gray-300 justify-between items-start sm:items-center">
@@ -31,11 +32,22 @@ const ScheduledLessonCard = ({ lesson, handleDelete }) => {
         {status && (
           <p className="text-sm text-gray-500 mt-1">Status: {status}</p>
         )}
+        {meetingLink &&
+        <a
+          href={meetingLink}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="bg-gradient-to-r from-celestialBlue to-africanViolet text-transparent bg-clip-text hover:text-africanViolet underline mt-auto transition-colors"
+        >
+          Join Zoom Meeting
+        </a>}
       </div>
 
       <div className="mt-3 sm:mt-0">
-        <button className="text-sm bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
-        onClick={handleCancel}>
+        <button
+          className="text-sm bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+          onClick={handleCancel}
+        >
           Cancel
         </button>
       </div>

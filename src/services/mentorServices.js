@@ -1,3 +1,4 @@
+import { a } from "framer-motion/client";
 import { authInstance } from "./instance";
 
 const mentorServices = {
@@ -7,6 +8,10 @@ const mentorServices = {
   },
    getAllMentors: async (queryParams) => {
     const response = await authInstance.get(`/mentors${queryParams}`);
+    return response.data;
+  },
+  getMentorEarnings:async () => {
+    const response = await authInstance.get('/mentors/earnings');
     return response.data;
   },
   getMentorRequests: async () => {

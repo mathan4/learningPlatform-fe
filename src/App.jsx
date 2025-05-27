@@ -1,4 +1,3 @@
-import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import authLoader from "./loaders/authLoader";
@@ -14,11 +13,13 @@ import userDashboardLoader from "./loaders/userDashboardLoader";
 import UserProfile from "./pages/user/UserProfile";
 import Logout from "./components/Logout";
 import BrowseMentor from "./pages/user/BrowseMentor";
-import { path } from "framer-motion/client";
 import MentorRequestForm from "./components/MentorRequestForm";
 import AdminDashboardWrapper from "./wrappers/AdminDashboardWrapper";
 import { adminDashboardLoader } from "./loaders/adminDashboardLoader";
 import AdminDashboard from "./pages/admin/AdminDashboard";
+import MentorDashboard from "./pages/mentor/MentorDashboard";
+import MentorDashboardWrapper from "./wrappers/MentorDashboardWrapper";
+import { mentorDashboardLoader } from "./loaders/mentorDashboardLoader";
 
 const routes = [
   {
@@ -94,9 +95,22 @@ const routes = [
     ],
   },
   {
-    path:"logout",
-    element:<Logout/>
-  }
+    path: "mentor/dashboard",
+    element: <MentorDashboardWrapper />,
+    loader: authLoader,
+    hydrateFallbackElement: <div>Loading Mentor Dashboard...</div>,
+    children: [
+      {
+        index: true,
+        loader: mentorDashboardLoader,
+        element: <MentorDashboard />,
+      },
+    ],
+  },
+  {
+    path: "logout",
+    element: <Logout />,
+  },
 ];
 
 const router = createBrowserRouter(routes, {
