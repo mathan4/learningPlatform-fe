@@ -1,7 +1,7 @@
 // components/PaymentModal.jsx
 import { useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
 import { useState } from "react";
-import Modal from "./modal";
+import Modal from "./Modal";
 import paymentService from "../services/paymentService";
 
 const Payment = ({ lesson, onClose, fetchLessons }) => {
