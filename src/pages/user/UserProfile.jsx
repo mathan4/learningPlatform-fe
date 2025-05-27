@@ -20,7 +20,7 @@ const UserProfile = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [imagePreview, setImagePreview] = useState(user.profilePicture || null);
   const fileInputRef = useRef(null);
-  console.log(user);
+  
   useEffect(() => {
     if (user.firstName == "") {
       fetchUser();

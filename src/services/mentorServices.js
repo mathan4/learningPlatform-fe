@@ -1,4 +1,4 @@
-import { a } from "framer-motion/client";
+
 import { authInstance } from "./instance";
 
 const mentorServices = {

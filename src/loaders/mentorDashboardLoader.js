@@ -39,7 +39,8 @@ export const mentorDashboardLoader = async () => {
     // Get mentor's total earnings with error handling
     try {
       const earningsResponse = await mentorServices.getMentorEarnings();
-      totalEarnings = earningsResponse?.earnings || earningsResponse?.data?.earnings || 0;
+
+      totalEarnings = earningsResponse?.totalEarnings|| 0;
     } catch (earningsError) {
       console.warn("Failed to fetch earnings:", earningsError);
       totalEarnings = 0;

@@ -25,7 +25,6 @@ const routes = [
   {
     path: "/",
     element: <LayoutWrapper />,
-    loader: authLoader,
     hydrateFallbackElement: <div>Loading...</div>,
     children: [
       {
@@ -95,7 +94,7 @@ const routes = [
     ],
   },
   {
-    path: "mentor/dashboard",
+    path: "mentor",
     element: <MentorDashboardWrapper />,
     loader: authLoader,
     hydrateFallbackElement: <div>Loading Mentor Dashboard...</div>,
@@ -104,6 +103,12 @@ const routes = [
         index: true,
         loader: mentorDashboardLoader,
         element: <MentorDashboard />,
+      },
+      {
+        path: "profile",
+        element: <UserProfile/>,
+        loader: authLoader,
+        hydrateFallbackElement: <div>Loading user profile...</div>,
       },
     ],
   },

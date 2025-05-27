@@ -6,12 +6,6 @@ const DashboardWrapper = () => {
   const loadedData = useLoaderData(); // This will be the { user: {...} } object
   const user = loadedData?.user; // Access the actual user object within the loaded data
 
-  // For debugging:
-  console.log("DashboardWrapper - Loaded Data:", loadedData);
-  console.log("DashboardWrapper - Extracted User:", user);
-  console.log("DashboardWrapper - User Role:", user?.role);
-
-
   if (!user) {
     console.log("DashboardWrapper: Redirecting unauthenticated user to login.");
     return <Navigate to="/login" replace />;

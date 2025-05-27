@@ -4,12 +4,20 @@ import ScheduledLessonCard from "../../components/ScheduledLessonCard";
 import MentorCard from "../../components/MentorCard";
 import BookLessonModal from "../../components/BookLessonModal";
 import lessonServices from "../../services/lessonService";
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+import Payment from "../../components/Payment";
+
 
 const UserDashboard = () => {
   const { lessons: initialLessons, mentors } = useLoaderData();
+  const [selectedLessonForPayment, setSelectedLessonForPayment] = useState(null);
+
+  const publishableKey = import.meta.env.VITE_PUBLISHABLE_KEY;
 
   const [selectedMentor, setSelectedMentor] = useState(null);
   const [lessons, setLessons] = useState(initialLessons);
+
 
   const handleDelete = (deletedId) => {
     setLessons((prevLessons) =>
@@ -27,7 +35,7 @@ const UserDashboard = () => {
   };
 
   return (
-     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-black py-20 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-black py-20 px-4">
       <h2 className="text-3xl font-bold bg-gradient-to-r from-celestialBlue to-africanViolet text-transparent bg-clip-text mb-6 text-center">
         Your Scheduled Classes
       </h2>
@@ -39,11 +47,23 @@ const UserDashboard = () => {
           </p>
         ) : (
           lessons.map((lesson) => (
-            <ScheduledLessonCard
-              key={lesson._id}
-              lesson={lesson}
-              handleDelete={handleDelete}
-            />
+            <div key={lesson._id}>
+              <ScheduledLessonCard
+                key={lesson._id}
+                lesson={lesson}
+                handleDelete={handleDelete}
+              />
+              <div>
+                {lesson.status === "completed" && (
+                  <button
+                    onClick={() => setSelectedLessonForPayment(lesson)}
+                    className="mt-2 bg-green-600 text-white px-4 py-1 rounded"
+                  >
+                    Pay Now
+                  </button>
+                )}
+              </div>
+            </div>
           ))
         )}
       </div>
@@ -52,7 +72,9 @@ const UserDashboard = () => {
         Find a Mentor
       </h2>
 
-      {mentors && Array.isArray(mentors.mentors) && mentors.mentors.length > 0 ? (
+      {mentors &&
+      Array.isArray(mentors.mentors) &&
+      mentors.mentors.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {mentors.mentors.map((mentor) => (
             <MentorCard
@@ -74,6 +96,15 @@ const UserDashboard = () => {
           onClose={() => setSelectedMentor(null)}
           fetchLessons={fetchLessons}
         />
+      )}
+      {selectedLessonForPayment && (
+        <Elements stripe={loadStripe(publishableKey)}>
+          <Payment
+            lesson={selectedLessonForPayment}
+            onClose={() => setSelectedLessonForPayment(null)}
+            fetchLessons={fetchLessons}
+          />
+        </Elements>
       )}
     </div>
   );

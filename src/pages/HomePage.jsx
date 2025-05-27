@@ -9,6 +9,12 @@ import {
   Award,
   Briefcase,
 } from 'lucide-react';
+import profile1 from '../assets/profile1.jpg'
+import profile2 from '../assets/profile2.jpg'
+import profile3 from '../assets/profile3.jpg'
+import mentor from '../assets/mentor.jpg'
+import lesson from '../assets/lesson.jpg'
+import learn from '../assets/learn.jpg'
 
 // Animation Variants
 const containerVariants = {
@@ -124,9 +130,11 @@ const HomePage = () => {
           goals.
         </motion.p>
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8, ease: 'easeInOut', delay: 0.6 }}>
-          <button className="bg-gradient-to-r from-blue-500 to-purple-500 text-white hover:from-blue-600 hover:to-purple-600 px-8 py-3 rounded-full shadow-lg hover:scale-105 transition-all duration-300 text-lg">
-            <Rocket className="mr-2 w-5 h-5" />
+          <button className="bg-gradient-to-r from-blue-500 to-purple-500 text-white hover:from-blue-600 hover:to-purple-600 px-8 py-3 rounded-full shadow-lg hover:scale-105 transition-all duration-300 text-lg ">
+           <div className="flex items-center gap-2">
+             <Rocket className="mr-2 w-5 h-5 "/>
             Get Started
+            </div>
           </button>
         </motion.div>
       </header>
@@ -160,21 +168,21 @@ const HomePage = () => {
                 title: '1. Find a Mentor',
                 text:
                   'Browse Mentors profiles, check their qualifications and expertise. Filter by subject, price, and availability to find your ideal Mentor.',
-                img: 'https://source.unsplash.com/featured/?tutor,teacher',
+                img: mentor,
                 imgFirst: false,
               },
               {
                 title: '2. Book a Lesson',
                 text:
                   'Check Mentor availability and schedule a lesson that fits your needs. Reschedule or cancel lessons with ease.',
-                img: 'https://source.unsplash.com/featured/?online,learning',
+                img: lesson,
                 imgFirst: true,
               },
               {
                 title: '3. Start Learning',
                 text:
                   'Connect with your Mentor in a live online lesson. Access lesson recordings for review anytime.',
-                img: 'https://source.unsplash.com/featured/?online,education',
+                img: learn,
                 imgFirst: false,
               },
             ].map(({ title, text, img, imgFirst }, idx) => (
@@ -219,19 +227,19 @@ const HomePage = () => {
             name="Alice Johnson"
             role="Student"
             quote="MentorBridge has transformed my learning experience. I found the perfect Mentor and improved my grades significantly!"
-            image="https://source.unsplash.com/featured/?woman,student"
+            image={profile2}
           />
           <TestimonialCard
             name="Bob Williams"
             role="Mentor"
             quote="I love teaching on MentorBridge. The platform is easy to use, and I can connect with students from all over the world."
-            image="https://source.unsplash.com/featured/?man,teacher"
+            image={profile1}
           />
           <TestimonialCard
             name="Sarah Davis"
             role="Parent"
             quote="MentorBridge provides a safe and effective way for my children to get the extra help they need."
-            image="https://source.unsplash.com/featured/?woman,parent"
+            image={profile3}
           />
         </motion.div>
       </section>

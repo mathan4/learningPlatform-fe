@@ -10,17 +10,14 @@ import {
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { Link, useLocation } from "react-router-dom";
 
+import logo from "../assets/logo.jpg";
+
 const getNavigation = (user) => {
   const location = useLocation();
   const currentPath = location.pathname;
   if (!user) {
     return [
       { name: "Home", href: "/", current: currentPath === "/" },
-      {
-        name: "Find Tutors",
-        href: "/tutors",
-        current: currentPath === "/tutors",
-      },
       {
         name: "Register",
         href: "/register",
@@ -79,25 +76,14 @@ const getNavigation = (user) => {
       return [
         {
           name: "Dashboard",
-          href: "/mentor/dashboard",
-          current: currentPath === "/mentor/dashboard",
-        },
-        {
-          name: "My Schedule",
-          href: "/mentor/schedule",
-          current: currentPath === "/mentor/schedule",
-        },
-        {
-          name: "Earnings",
-          href: "/mentor/earnings",
-          current: currentPath === "/mentor/earnings",
+          href: "/mentor",
+          current: currentPath === "/mentor",
         },
         {
           name: "Profile",
           href: "/mentor/profile",
           current: currentPath === "/mentor/profile",
         },
-        { name: "Logout", href: "/logout", current: currentPath === "/logout" },
       ];
 
     default:
@@ -139,7 +125,7 @@ export default function NavBar({ user }) {
           </div>
           <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
             <div className="flex shrink-0 items-center">
-              <img alt="Your Company" src="" className="h-8 w-auto" />
+              <img alt="Your Company" src={logo} className="h-8 w-auto rounded-3xl" />
             </div>
             <div className="hidden sm:ml-6 sm:block">
               <div className="flex space-x-4">
