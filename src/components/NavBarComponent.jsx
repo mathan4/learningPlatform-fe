@@ -38,22 +38,6 @@ const getNavigation = (user) => {
           href: "/admin/dashboard",
           current: currentPath === "/admin/dashboard",
         },
-        {
-          name: "Users",
-          href: "/admin/users",
-          current: currentPath === "/admin/users",
-        },
-        {
-          name: "Lessons",
-          href: "/admin/lessons",
-          current: currentPath === "/admin/lessons",
-        },
-        {
-          name: "Payments",
-          href: "/admin/payments",
-          current: currentPath === "/admin/payments",
-        },
-        { name: "Logout", href: "/logout", current: currentPath === "/logout" },
       ];
 
     case "student":
@@ -211,7 +195,7 @@ export default function NavBar({ user }) {
                   </MenuItem>
                   <MenuItem>
                     <Link
-                      to="/dashboard/logout"
+                      to="/logout"
                       className="block px-4 py-2 text-sm text-gray-700 data-focus:bg-gray-100 data-focus:outline-hidden"
                     >
                       Log out

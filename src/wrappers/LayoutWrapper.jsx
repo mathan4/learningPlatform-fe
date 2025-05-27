@@ -10,8 +10,8 @@ const LayoutWrapper = () => {
             return <Navigate to="/admin/dashboard" />
         } else if (user.role === 'user') {
             return <Navigate to="/dashboard" />
-        } else if (user.role === 'recruiter') {
-            return <Navigate to="/recruiter/dashboard" />
+        } else if (user.role === 'mentor') {
+            return <Navigate to="/mentor/dashboard" />
         }
     }
 

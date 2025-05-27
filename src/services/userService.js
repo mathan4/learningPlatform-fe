@@ -1,4 +1,4 @@
-import { fileInstance } from "./instance";
+import { authInstance, fileInstance } from "./instance";
 
 const userService = {
   updateUserProfile: async (userData) => {
@@ -35,6 +35,14 @@ const userService = {
 
     const response = await fileInstance.post("/mentorRequest", formData);
     return response.data;
+  }, 
+  getAllUsers: async () => {
+    const response = await authInstance.get('/users');
+    return response.data;
+  },
+  deleteUserById: async (id) => {
+    const res = await instance.delete(`/users/${id}`);
+    return res.data;
   },
 };
 
