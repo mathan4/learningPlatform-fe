@@ -33,7 +33,7 @@ const userService = {
       });
     }
 
-    const response = await fileInstance.post("/mentorRequest", formData);
+    const response = await fileInstance.post("/users/mentorRequest", formData);
     return response.data;
   }, 
   getAllUsers: async () => {
