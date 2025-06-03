@@ -3,6 +3,7 @@ import mentorServices from "../services/mentorServices";
 
 const MentorRequestList = ({ mentorRequests: initialRequests }) => {
   const [mentorRequests, setMentorRequests] = useState(initialRequests || []);
+  const baseURL = import.meta.env.VITE_BASE_URL
 
   useEffect(() => {
     setMentorRequests(initialRequests || []);
@@ -42,14 +43,20 @@ const MentorRequestList = ({ mentorRequests: initialRequests }) => {
     if (!mentorRequests) return true;
     if (!Array.isArray(mentorRequests)) return true;
     if (mentorRequests.length === 0) return true;
-    
+
     // Handle case where you receive [Array(0)] - an array containing empty arrays
-    if (mentorRequests.length === 1 && Array.isArray(mentorRequests[0]) && mentorRequests[0].length === 0) {
+    if (
+      mentorRequests.length === 1 &&
+      Array.isArray(mentorRequests[0]) &&
+      mentorRequests[0].length === 0
+    ) {
       return true;
     }
-    
+
     // Filter out any null/undefined items and check if any valid requests remain
-    const validRequests = mentorRequests.filter(request => request && typeof request === 'object');
+    const validRequests = mentorRequests.filter(
+      (request) => request && typeof request === "object"
+    );
     return validRequests.length === 0;
   };
 
@@ -62,11 +69,14 @@ const MentorRequestList = ({ mentorRequests: initialRequests }) => {
   }
 
   // Flatten and filter the requests in case of nested arrays
-  const flattenedRequests = Array.isArray(mentorRequests[0]) && mentorRequests.length === 1 
-    ? mentorRequests[0] 
-    : mentorRequests;
+  const flattenedRequests =
+    Array.isArray(mentorRequests[0]) && mentorRequests.length === 1
+      ? mentorRequests[0]
+      : mentorRequests;
 
-  const validRequests = flattenedRequests.filter(request => request && typeof request === 'object');
+  const validRequests = flattenedRequests.filter(
+    (request) => request && typeof request === "object"
+  );
 
   return (
     <div>
@@ -102,6 +112,20 @@ const MentorRequestList = ({ mentorRequests: initialRequests }) => {
               <p>
                 <strong>Status:</strong> {request.status || "Pending"}
               </p>
+              {request.documents && request.documents.length > 0 && (
+                <p>
+                  <strong>Document:</strong>{" "}
+                  <a
+                    href={`${baseURL}${request.documents[0]}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-500 underline"
+                  >
+                    View Document
+                  </a>
+                </p>
+              )}
+
               <div className="mt-2 space-x-2">
                 <button
                   onClick={() => handleApproveClick(request._id)}
