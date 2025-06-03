@@ -116,7 +116,7 @@ const MentorRequestList = ({ mentorRequests: initialRequests }) => {
                 <p>
                   <strong>Document:</strong>{" "}
                   <a
-                    href={`${baseURL}${request.documents[0]}`}
+                    href={`${baseURL}/${request.documents[0]}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-blue-500 underline"
