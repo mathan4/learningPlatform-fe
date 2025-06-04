@@ -35,7 +35,7 @@ const BookLessonModal = ({ mentor, onClose }) => {
         successUrl: `${URL}/payment-success`,
         cancelUrl: `${URL}/payment-cancel`
       };
-      await setSessionStorage.setItem("pendingLesson", res.data._id);
+      await sessionStorage.setItem("pendingLesson", res.data._id);
       const response = await paymentService.createCheckoutSession(checkoutData);
       window.location.href = response.data.url;
     } catch (error) {
