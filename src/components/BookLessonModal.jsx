@@ -2,7 +2,7 @@ import { useState } from "react";
 import paymentService from "../services/paymentService";
 import { useNavigate, useRouteLoaderData } from "react-router-dom";
 import lessonServices from "../services/lessonService";
-import { u } from "framer-motion/client";
+
 
 const BookLessonModal = ({ mentor, onClose }) => {
   const [form, setForm] = useState({ subject: "", date: "", time: "" });
@@ -10,6 +10,7 @@ const BookLessonModal = ({ mentor, onClose }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const URL = import.meta.env.VITE_URL;
  
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -31,10 +32,10 @@ const BookLessonModal = ({ mentor, onClose }) => {
         amount: res.data.price,
         studentId: user.user._id,
         lessonId: res.data._id,
-        successUrl: `${window.location.origin}/payment-success`,
-        cancelUrl: `${window.location.origin}/payment-cancel`
+        successUrl: `${URL}/payment-success`,
+        cancelUrl: `${URL}/payment-cancel`
       };
-
+      await setSessionStorage.setItem("pendingLesson", res.data._id);
       const response = await paymentService.createCheckoutSession(checkoutData);
       window.location.href = response.data.url;
     } catch (error) {

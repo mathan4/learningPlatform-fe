@@ -138,7 +138,7 @@ const MentorRequestForm = () => {
                 onChange={(e) =>
                   handleAvailabilityChange(i, "day", e.target.value)
                 }
-                className="w-full bg-gray-800 text-white border border-africanViolet rounded-md p-2"
+                className="w-full bg-white/5  text-white/75 border border-africanViolet rounded-md p-2"
               >
                 <option value="">Select Day</option>
                 {[
