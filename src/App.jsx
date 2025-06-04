@@ -20,6 +20,8 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 import MentorDashboard from "./pages/mentor/MentorDashboard";
 import MentorDashboardWrapper from "./wrappers/MentorDashboardWrapper";
 import { mentorDashboardLoader } from "./loaders/mentorDashboardLoader";
+import PaymentSuccess from "./components/PaymentSuccess";
+import PaymentCancel from "./components/PaymentCancel";
 
 const routes = [
   {
@@ -42,6 +44,7 @@ const routes = [
     ],
   },
   {
+    id: "dashboard",
     path: "/dashboard",
     element: <DashboardWrapper />,
     loader: authLoader,
@@ -68,17 +71,15 @@ const routes = [
         element: <MentorRequestForm />,
         hydrateFallbackElement: <div>Loading form...</div>,
       },
-      // {
-      //   path: "applications",
-      //   element: <Applications />,
-      //   loader: jobsLoader,
-      //   hydrateFallbackElement: <div>Loading Applications...</div>,
-      // },
-      // {
-      //   path: "logout",
-      //   element: <Logout />
-      // }
     ],
+  },
+  {
+    path: "/payment-success",
+    element: <PaymentSuccess />,
+  },
+  {
+    path: "/payment-cancel",
+    element: <PaymentCancel />,
   },
   {
     path: "/admin/dashboard",
@@ -106,7 +107,7 @@ const routes = [
       },
       {
         path: "profile",
-        element: <UserProfile/>,
+        element: <UserProfile />,
         loader: authLoader,
         hydrateFallbackElement: <div>Loading user profile...</div>,
       },

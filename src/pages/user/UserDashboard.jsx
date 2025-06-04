@@ -4,14 +4,12 @@ import ScheduledLessonCard from "../../components/ScheduledLessonCard";
 import MentorCard from "../../components/MentorCard";
 import BookLessonModal from "../../components/BookLessonModal";
 import lessonServices from "../../services/lessonService";
-import { Elements } from "@stripe/react-stripe-js";
-import { loadStripe } from "@stripe/stripe-js";
-import Payment from "../../components/Payment";
 
 
 const UserDashboard = () => {
   const { lessons: initialLessons, mentors } = useLoaderData();
-  const [selectedLessonForPayment, setSelectedLessonForPayment] = useState(null);
+  
+  
 
   const publishableKey = import.meta.env.VITE_PUBLISHABLE_KEY;
 
@@ -54,14 +52,7 @@ const UserDashboard = () => {
                 handleDelete={handleDelete}
               />
               <div>
-                {lesson.status === "completed" && (
-                  <button
-                    onClick={() => setSelectedLessonForPayment(lesson)}
-                    className="mt-2 bg-green-600 text-white px-4 py-1 rounded"
-                  >
-                    Pay Now
-                  </button>
-                )}
+               
               </div>
             </div>
           ))
@@ -97,15 +88,8 @@ const UserDashboard = () => {
           fetchLessons={fetchLessons}
         />
       )}
-      {selectedLessonForPayment && (
-        <Elements stripe={loadStripe(publishableKey)}>
-          <Payment
-            lesson={selectedLessonForPayment}
-            onClose={() => setSelectedLessonForPayment(null)}
-            fetchLessons={fetchLessons}
-          />
-        </Elements>
-      )}
+      
+      
     </div>
   );
 };
