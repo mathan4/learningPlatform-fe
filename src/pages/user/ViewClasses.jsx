@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import courseService from '../services/courseService';
+import courseService from '../../services/courseService';
 
 const ViewClasses = () => {
   const { courseId } = useParams();
