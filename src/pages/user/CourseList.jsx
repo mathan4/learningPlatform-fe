@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Filter, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
-import courseServices from '../../services/courseService'; // adjust the path
+import courseService from '../../services/courseService'; // adjust the path
 import CourseCard from '../../components/CourseCard'; // your custom component
 
 const CourseList = () => {
@@ -44,7 +44,7 @@ const CourseList = () => {
         params.append('page', currentPage);
         params.append('limit', 12);
 
-        const res = await courseServices.getAllCourses(`?${params.toString()}`);
+        const res = await courseService.getAllCourses(`?${params.toString()}`);
         setCourses(res.data);
         setTotalPages(res.data.totalPages);
       } catch (err) {

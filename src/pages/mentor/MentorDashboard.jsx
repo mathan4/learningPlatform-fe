@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import lessonServices from "../../services/lessonService";
 import mentorServices from "../../services/mentorServices";
 import CourseCreationForm from "../../components/CourseCreationForm";
-import Modal from "../../components/modal";
+import Modal from "../../components/Modal";
 import courseService from "../../services/courseService";
 
 const MentorDashboard = () => {
