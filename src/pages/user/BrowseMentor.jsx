@@ -2,23 +2,25 @@ import { useState, useEffect } from 'react';
 import { Filter, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
 import mentorServices from '../../services/mentorServices';
 import MentorCard from '../../components/MentorCard';
+
 const BrowseMentor = () => {
   const [mentors, setMentors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
-  
-  // Filter states
+
+  // Filters and search
   const [filters, setFilters] = useState({
     subject: '',
     minRate: '',
     maxRate: '',
     day: '',
     sortBy: 'averageRating',
-    order: 'desc'
+    order: 'desc',
+    search: '' // 👈 New search field
   });
-  
+
   const [showFilters, setShowFilters] = useState(false);
 
   const subjects = [
@@ -40,11 +42,11 @@ const BrowseMentor = () => {
     try {
       setLoading(true);
       const params = new URLSearchParams();
-      
+
       Object.entries(filters).forEach(([key, value]) => {
         if (value) params.append(key, value);
       });
-      
+
       params.append('page', currentPage.toString());
       params.append('limit', '12');
 
@@ -75,13 +77,13 @@ const BrowseMentor = () => {
       maxRate: '',
       day: '',
       sortBy: 'averageRating',
-      order: 'desc'
+      order: 'desc',
+      search: ''
     });
     setCurrentPage(1);
   };
 
   const handleBookClick = (mentor) => {
-    // Handle booking logic here
     console.log('Booking mentor:', mentor);
   };
 
@@ -120,9 +122,9 @@ const BrowseMentor = () => {
         >
           <ChevronLeft size={20} />
         </button>
-        
+
         {pages}
-        
+
         <button
           onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
           disabled={currentPage === totalPages}
@@ -137,10 +139,8 @@ const BrowseMentor = () => {
   if (error) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black p-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center py-12">
-            <p className="text-red-400 text-lg">{error}</p>
-          </div>
+        <div className="max-w-7xl mx-auto text-center py-12">
+          <p className="text-red-400 text-lg">{error}</p>
         </div>
       </div>
     );
@@ -159,6 +159,17 @@ const BrowseMentor = () => {
           </p>
         </div>
 
+        {/* Search Bar */}
+        <div className="mb-6 flex justify-between items-center gap-4">
+          <input
+            type="text"
+            value={filters.search}
+            onChange={(e) => handleFilterChange('search', e.target.value)}
+            placeholder="Search by mentor name, subject..."
+            className="w-full bg-white/10 border border-white/20 text-white px-4 py-2 rounded-lg focus:border-celestialBlue focus:outline-none"
+          />
+        </div>
+
         {/* Filters */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-4">
@@ -173,7 +184,7 @@ const BrowseMentor = () => {
                 className={`transform transition ${showFilters ? 'rotate-180' : ''}`} 
               />
             </button>
-            
+
             <div className="text-white/75">
               Showing {mentors.length} mentors
             </div>
@@ -272,7 +283,7 @@ const BrowseMentor = () => {
           )}
         </div>
 
-        {/* Mentors Grid */}
+        {/* Mentor Grid */}
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {[...Array(12)].map((_, i) => (
@@ -306,8 +317,6 @@ const BrowseMentor = () => {
                 />
               ))}
             </div>
-
-            {/* Pagination */}
             {totalPages > 1 && renderPagination()}
           </>
         )}

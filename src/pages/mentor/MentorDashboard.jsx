@@ -1,7 +1,10 @@
 import { useLoaderData } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import lessonServices from "../../services/lessonService";
 import mentorServices from "../../services/mentorServices";
+import CourseCreationForm from "../../components/CourseCreationForm";
+import Modal from "../../components/modal";
+import courseService from "../../services/courseService";
 
 const MentorDashboard = () => {
   const loaderData = useLoaderData();
@@ -9,7 +12,10 @@ const MentorDashboard = () => {
   const [earnings, setEarnings] = useState(loaderData.totalEarnings || 0);
   const [error, setError] = useState(loaderData.error || null);
   const [schedulingSet, setSchedulingSet] = useState(new Set());
+  const [isModalOpen, setIsModalOpen] = useState(false);
+   
 
+  
   const fetchData = async () => {
     try {
       setError(null);
@@ -24,6 +30,12 @@ const MentorDashboard = () => {
       console.error("Failed to refresh data:", err);
       setError("Failed to refresh data. Please try again.");
     }
+  };
+  
+  
+  const handleCourseCreationSuccess = () => {
+    setIsModalOpen(false);
+    fetchData();
   };
 
   const startScheduling = (lessonId) => setSchedulingSet(new Set(schedulingSet).add(lessonId));
@@ -91,6 +103,16 @@ const MentorDashboard = () => {
         </div>
       )}
 
+      {/* Create Course Button */}
+      <div className="mb-6">
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors"
+        >
+          Create Course
+        </button>
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 w-full max-w-6xl">
         <div className="bg-gray-800 p-4 rounded-lg text-center">
           <h3 className="text-lg font-semibold text-white">Booked Lessons</h3>
@@ -101,8 +123,10 @@ const MentorDashboard = () => {
           <p className="text-2xl font-bold text-purple-400">${earnings.toFixed(2)}</p>
         </div>
         <div className="bg-gray-800 p-4 rounded-lg text-center">
-          <h3 className="text-lg font-semibold text-white">Status</h3>
-          <p className="text-xl text-green-300">View & Cancel Only</p>
+          <h3 className="text-lg font-semibold text-white">Upcoming Lessons</h3>
+          <p className="text-2xl font-bold text-green-400">
+            {lessons.filter((lesson) => lesson.status === "scheduled").length}
+          </p>
         </div>
       </div>
 
@@ -176,6 +200,13 @@ const MentorDashboard = () => {
             ))}
           </div>
         </div>
+      )}
+
+      {/* Modal for Course Creation Form */}
+      {isModalOpen && (
+        <Modal onClose={() => setIsModalOpen(false)}>
+          <CourseCreationForm onSuccess={handleCourseCreationSuccess} />
+        </Modal>
       )}
     </div>
   );

@@ -1,16 +1,18 @@
 import lessonServices from "../services/lessonService";
 import mentorServices from "../services/mentorServices";
+import courseService from "../services/courseService";
 
 const userDashboardLoader = async () => {
-  const [lessons, mentors] = await Promise.all([
+  const [lessons, mentors, enrolledCourses] = await Promise.all([
     lessonServices.getStudentLessons(),
-    mentorServices.getMentors()
+    mentorServices.getMentors(),
+    courseService.getEnrolledCourse(), 
   ]);
-   console.log(lessons.data);
-   console.log(mentors.data);
+
   return {
     lessons: lessons.data,
-    mentors: mentors.data
+    mentors: mentors.data,
+    courses: enrolledCourses.data, 
   };
 };
 

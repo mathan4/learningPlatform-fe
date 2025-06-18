@@ -43,7 +43,7 @@ const MentorCard = ({ mentor, onBookClick }) => {
   return (
     <div className="bg-white/10 border border-africanViolet rounded-2xl shadow-md p-5 hover:shadow-lg transition duration-200">
       <h3 className="text-xl bg-gradient-to-b from-white to bg-gray-300 text-transparent bg-clip-text font-bold text-indigoCustom mb-2">
-        {mentor.userId.firstName} {mentor.userId.lastName}
+        {mentor.user.firstName} {mentor.user.lastName}
       </h3>
 
       <p className="text-sm text-white/75 mb-2">

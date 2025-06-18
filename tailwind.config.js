@@ -7,6 +7,7 @@ export default {
   theme: {
    extend: {
       colors: {
+        offWhite: '#f8f8f8',
         indigoCustom: "#4A148C",
         africanViolet: "#AA78A6",
         papayaWhip: "#FFEFD3",

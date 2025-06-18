@@ -1,3 +1,4 @@
+import courseService from "../services/courseService";
 import lessonServices from "../services/lessonService";
 import mentorServices from "../services/mentorServices";
 
@@ -25,7 +26,8 @@ export const mentorDashboardLoader = async () => {
 
     // Filter lessons safely
     const upcomingLessons = allLessons.filter(
-      (lesson) => lesson?.status === "scheduled" || lesson?.status === "accepted"
+      (lesson) =>
+        lesson?.status === "scheduled" || lesson?.status === "accepted"
     );
 
     const completedLessons = allLessons.filter(
@@ -40,16 +42,18 @@ export const mentorDashboardLoader = async () => {
     try {
       const earningsResponse = await mentorServices.getMentorEarnings();
 
-      totalEarnings = earningsResponse?.totalEarnings|| 0;
+      totalEarnings = earningsResponse?.totalEarnings || 0;
     } catch (earningsError) {
       console.warn("Failed to fetch earnings:", earningsError);
       totalEarnings = 0;
     }
 
     // Ensure totalEarnings is a number
-    if (typeof totalEarnings !== 'number' || isNaN(totalEarnings)) {
+    if (typeof totalEarnings !== "number" || isNaN(totalEarnings)) {
       totalEarnings = 0;
     }
+    const res = await courseService.getMentorCourses();
+    console.log("helos" + res);
 
     // Return structured data with fallbacks
     return {
@@ -64,12 +68,12 @@ export const mentorDashboardLoader = async () => {
         completedCount: completedLessons.length,
         pendingCount: pendingLessons.length,
         hasLessons: allLessons.length > 0,
-        hasEarnings: totalEarnings > 0
-      }
+        hasEarnings: totalEarnings > 0,
+      },
     };
   } catch (error) {
     console.error("Critical error loading mentor dashboard data:", error);
-    
+
     // Return empty state instead of throwing error
     return {
       allLessons: [],
@@ -83,9 +87,9 @@ export const mentorDashboardLoader = async () => {
         completedCount: 0,
         pendingCount: 0,
         hasLessons: false,
-        hasEarnings: false
+        hasEarnings: false,
       },
-      error: "Failed to load dashboard data. Please try refreshing the page."
+      error: "Failed to load dashboard data. Please try refreshing the page.",
     };
   }
 };
