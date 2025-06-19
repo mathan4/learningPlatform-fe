@@ -20,7 +20,7 @@ const jsonInstance = axios.create({
 // Auth instance with CSRF protection for cookie-based auth
 const authInstance = axios.create({
     baseURL,
-    timeout: 5000, // Slightly longer timeout for auth operations
+    timeout: 10000, // Slightly longer timeout for auth operations
     headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
