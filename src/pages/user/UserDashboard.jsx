@@ -1,15 +1,16 @@
 import { useLoaderData } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ScheduledLessonCard from "../../components/ScheduledLessonCard";
 import MentorCard from "../../components/MentorCard";
 import BookLessonModal from "../../components/BookLessonModal";
 import lessonServices from "../../services/lessonService";
+import { Link } from "react-router-dom";
 
 const UserDashboard = () => {
   const { lessons: initialLessons, mentors, courses } = useLoaderData();
 
   const [selectedMentor, setSelectedMentor] = useState(null);
-  const [lessons, setLessons] = useState(initialLessons);
+  const [lessons, setLessons] = useState(Array.isArray(initialLessons?.data) ? initialLessons.data : []);
 
   const handleDelete = (deletedId) => {
     setLessons((prevLessons) =>
@@ -20,7 +21,7 @@ const UserDashboard = () => {
   const fetchLessons = async () => {
     try {
       const response = await lessonServices.getStudentLessons();
-      setLessons(response.data);
+      setLessons(Array.isArray(response.data?.data) ? response.data.data : []);
     } catch (error) {
       console.error("Failed to fetch lessons:", error);
     }
@@ -34,11 +35,7 @@ const UserDashboard = () => {
       </h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
-        {lessons.length === 0 ? (
-          <p className="text-gray-300 text-center col-span-full">
-            No classes scheduled yet.
-          </p>
-        ) : (
+        {Array.isArray(lessons) && lessons.length > 0 ? (
           lessons.map((lesson) => (
             <ScheduledLessonCard
               key={lesson._id}
@@ -46,6 +43,10 @@ const UserDashboard = () => {
               handleDelete={handleDelete}
             />
           ))
+        ) : (
+          <p className="text-gray-300 text-center col-span-full">
+            No classes scheduled yet.
+          </p>
         )}
       </div>
 
@@ -65,7 +66,12 @@ const UserDashboard = () => {
               <p className="text-sm mb-2">{course.description}</p>
               <p className="text-xs text-gray-400">Subject: {course.subject}</p>
               <p className="text-xs text-gray-400">Level: {course.level}</p>
-              {/* Add link to view course or classes if needed */}
+              <Link
+                to={`/dashboard/courses/${course._id}/classes`}
+                className="inline-block mt-3 text-sm text-blue-400 hover:underline"
+              >
+                View Classes
+              </Link>
             </div>
           ))}
         </div>
@@ -80,9 +86,7 @@ const UserDashboard = () => {
         Find a Mentor
       </h2>
 
-      {mentors &&
-      Array.isArray(mentors.mentors) &&
-      mentors.mentors.length > 0 ? (
+      {mentors && Array.isArray(mentors.mentors) && mentors.mentors.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {mentors.mentors.map((mentor) => (
             <MentorCard

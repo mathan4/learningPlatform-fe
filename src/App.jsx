@@ -72,7 +72,7 @@ const routes = [
     ],
   },
   {
-    path: "mentor",
+    path: "/mentor",
     element: <MentorDashboardWrapper />,
     loader: authLoader,
     children: [
@@ -80,7 +80,7 @@ const routes = [
       { path: "profile", element: <UserProfile />, loader: authLoader },
     ],
   },
-  { path: "logout", element: <Logout /> },
+  { path: "/logout", element: <Logout /> },
 ];
 
 // Create router

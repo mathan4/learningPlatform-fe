@@ -28,7 +28,7 @@ const courseService = {
   // Enroll in a course by ID
   enrollInCourse: async (id) => {
     const response = await authInstance.post(`/courses/enroll/${id}`);
-    
+
     return response.data;
   },
 
@@ -44,7 +44,7 @@ const courseService = {
       const response = await authInstance.delete(`/courses/enroll/${courseId}`);
       return response;
     } catch (error) {
-      console.error('Cancel enrollment error:', error);
+      console.error("Cancel enrollment error:", error);
       throw error;
     }
   },
@@ -52,13 +52,16 @@ const courseService = {
   // Cancel enrollment by enrollment ID (for pending payments)
   cancelEnrollmentById: async (enrollmentId) => {
     try {
-      const response = await authInstance.delete(`/courses/enroll/${enrollmentId}`);
+      const response = await authInstance.delete(
+        `/courses/enroll/${enrollmentId}`
+      );
       return response;
     } catch (error) {
-      console.error('Cancel enrollment by ID error:', error);
+      console.error("Cancel enrollment by ID error:", error);
       throw error;
     }
-  }
+  },
+  
 };
 
 export default courseService;

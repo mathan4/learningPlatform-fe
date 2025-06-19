@@ -33,7 +33,7 @@ const BookCourseModal = ({ course, onClose }) => {
       await sessionStorage.setItem("pendingCourse", res.course._id);
 
       const checkoutData = {
-        lessonId: course._id,
+        courseId: course._id,
         studentId: user.user._id,
         mentorId: res.course.mentorId,
         amount: course.pricing.totalPrice,
