@@ -6,6 +6,7 @@ import { adminDashboardLoader } from "./loaders/adminDashboardLoader";
 import { mentorDashboardLoader } from "./loaders/mentorDashboardLoader";
 import { Provider } from "react-redux";
 import store from "./redux/app/store";
+import CourseLessonsPage from "./pages/mentor/CourseLessonsPage";
 
 // Lazy loaded components
 const HomePage = lazy(() => import("./pages/HomePage"));
@@ -17,16 +18,24 @@ const UserDashboard = lazy(() => import("./pages/user/UserDashboard"));
 const UserProfile = lazy(() => import("./pages/user/UserProfile"));
 const BrowseMentor = lazy(() => import("./pages/user/BrowseMentor"));
 const MentorRequestForm = lazy(() => import("./components/MentorRequestForm"));
-const AdminDashboardWrapper = lazy(() => import("./wrappers/AdminDashboardWrapper"));
+const AdminDashboardWrapper = lazy(() =>
+  import("./wrappers/AdminDashboardWrapper")
+);
 const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard"));
-const MentorDashboardWrapper = lazy(() => import("./wrappers/MentorDashboardWrapper"));
+const MentorDashboardWrapper = lazy(() =>
+  import("./wrappers/MentorDashboardWrapper")
+);
 const MentorDashboard = lazy(() => import("./pages/mentor/MentorDashboard"));
 const Logout = lazy(() => import("./components/Logout"));
 const ToastProvider = lazy(() => import("./components/ToastProvider"));
 const PaymentSuccess = lazy(() => import("./components/PaymentSuccess"));
 const PaymentCancel = lazy(() => import("./components/PaymentCancel"));
-const PaymentSuccessCourse = lazy(() => import("./components/PaymentSuccessCourse"));
-const PaymentCancelCourse = lazy(() => import("./components/PaymentCancelCourse"));
+const PaymentSuccessCourse = lazy(() =>
+  import("./components/PaymentSuccessCourse")
+);
+const PaymentCancelCourse = lazy(() =>
+  import("./components/PaymentCancelCourse")
+);
 const CourseList = lazy(() => import("./pages/user/CourseList"));
 const CourseDetail = lazy(() => import("./pages/user/CourseDetails"));
 const ViewClasses = lazy(() => import("./pages/user/ViewClasses"));
@@ -68,7 +77,11 @@ const routes = [
     element: <AdminDashboardWrapper />,
     loader: authLoader,
     children: [
-      { index: true, loader: adminDashboardLoader, element: <AdminDashboard /> },
+      {
+        index: true,
+        loader: adminDashboardLoader,
+        element: <AdminDashboard />,
+      },
     ],
   },
   {
@@ -76,8 +89,16 @@ const routes = [
     element: <MentorDashboardWrapper />,
     loader: authLoader,
     children: [
-      { index: true, loader: mentorDashboardLoader, element: <MentorDashboard /> },
+      {
+        index: true,
+        loader: mentorDashboardLoader,
+        element: <MentorDashboard />,
+      },
       { path: "profile", element: <UserProfile />, loader: authLoader },
+      {
+        path: "courses/:courseId/lessons", 
+        element: <CourseLessonsPage />,
+      },
     ],
   },
   { path: "/logout", element: <Logout /> },
@@ -98,12 +119,15 @@ const router = createBrowserRouter(routes, {
 const App = () => {
   return (
     <Provider store={store}>
-      <Suspense fallback={<div className="flex justify-center items-center min-h-screen"><span className="loader" /></div>}>
+      <Suspense
+        fallback={
+          <div className="flex justify-center items-center min-h-screen">
+            <span className="loader" />
+          </div>
+        }
+      >
         <ToastProvider />
-        <RouterProvider
-          router={router}
-          future={{ v7_startTransition: true }}
-        />
+        <RouterProvider router={router} future={{ v7_startTransition: true }} />
       </Suspense>
     </Provider>
   );

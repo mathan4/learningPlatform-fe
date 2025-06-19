@@ -4,30 +4,35 @@ import mentorServices from "../services/mentorServices";
 
 export const mentorDashboardLoader = async () => {
   try {
-    // Get all mentor's lessons with proper error handling
     let allLessons = [];
     let totalEarnings = 0;
+    let mentorCourses = [];
 
     try {
       const lessonResponse = await lessonServices.getMentorLessons();
-      // Handle different response structures
-      allLessons = lessonResponse?.data || lessonResponse || [];
+      allLessons = Array.isArray(lessonResponse?.data) ? lessonResponse.data : [];
     } catch (lessonError) {
       console.warn("Failed to fetch lessons:", lessonError);
-      // Don't throw error, just log and continue with empty array
       allLessons = [];
     }
 
-    // Ensure allLessons is an array
     if (!Array.isArray(allLessons)) {
       console.warn("Lessons data is not an array, defaulting to empty array");
       allLessons = [];
     }
 
-    // Filter lessons safely
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1);
+
+    const upcomingLessonsToday = allLessons.filter((lesson) => {
+      const startTime = new Date(lesson.startTime);
+      return startTime >= today && startTime < tomorrow && (lesson.status === "scheduled" || lesson.status === "accepted");
+    });
+
     const upcomingLessons = allLessons.filter(
-      (lesson) =>
-        lesson?.status === "scheduled" || lesson?.status === "accepted"
+      (lesson) => lesson?.status === "scheduled" || lesson?.status === "accepted"
     );
 
     const completedLessons = allLessons.filter(
@@ -38,56 +43,68 @@ export const mentorDashboardLoader = async () => {
       (lesson) => lesson?.status === "pending"
     );
 
-    // Get mentor's total earnings with error handling
     try {
       const earningsResponse = await mentorServices.getMentorEarnings();
-
       totalEarnings = earningsResponse?.totalEarnings || 0;
     } catch (earningsError) {
       console.warn("Failed to fetch earnings:", earningsError);
       totalEarnings = 0;
     }
 
-    // Ensure totalEarnings is a number
     if (typeof totalEarnings !== "number" || isNaN(totalEarnings)) {
       totalEarnings = 0;
     }
-    const res = await courseService.getMentorCourses();
-    console.log("helos" + res);
 
-    // Return structured data with fallbacks
+    try {
+      const res = await courseService.getMentorCourses();
+      mentorCourses = Array.isArray(res?.data) ? res.data : [];
+    } catch (courseError) {
+      console.warn("Failed to fetch mentor courses:", courseError);
+      mentorCourses = [];
+    }
+
+    const totalStudents = mentorCourses.reduce((sum, course) => {
+      return sum + (course.enrolledStudents?.length || 0);
+    }, 0);
+
     return {
       allLessons,
       upcomingLessons,
       completedLessons,
       pendingLessons,
       totalEarnings,
+      mentorCourses,
+      upcomingLessonsToday,
       stats: {
         totalLessons: allLessons.length,
         upcomingCount: upcomingLessons.length,
         completedCount: completedLessons.length,
         pendingCount: pendingLessons.length,
+        todayCount: upcomingLessonsToday.length,
         hasLessons: allLessons.length > 0,
         hasEarnings: totalEarnings > 0,
+        totalStudents,
       },
     };
   } catch (error) {
     console.error("Critical error loading mentor dashboard data:", error);
-
-    // Return empty state instead of throwing error
     return {
       allLessons: [],
       upcomingLessons: [],
       completedLessons: [],
       pendingLessons: [],
       totalEarnings: 0,
+      mentorCourses: [],
+      upcomingLessonsToday: [],
       stats: {
         totalLessons: 0,
         upcomingCount: 0,
         completedCount: 0,
         pendingCount: 0,
+        todayCount: 0,
         hasLessons: false,
         hasEarnings: false,
+        totalStudents: 0,
       },
       error: "Failed to load dashboard data. Please try refreshing the page.",
     };

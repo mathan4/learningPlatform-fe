@@ -37,7 +37,6 @@ const getNavigation = (user) => {
     case "mentor":
       return [
         { name: "Dashboard", href: "/mentor", current: currentPath === "/mentor" },
-        { name: "Courses", href: "/courses", current: currentPath === "/courses" },
         { name: "Profile", href: "/mentor/profile", current: currentPath === "/mentor/profile" },
       ];
     default:

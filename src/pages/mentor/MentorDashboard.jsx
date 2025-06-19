@@ -1,215 +1,200 @@
-import { useLoaderData } from "react-router-dom";
-import { useState, useEffect, useRef } from "react";
+import { useLoaderData, Link } from "react-router-dom";
+import { useState } from "react";
 import lessonServices from "../../services/lessonService";
 import mentorServices from "../../services/mentorServices";
 import CourseCreationForm from "../../components/CourseCreationForm";
 import Modal from "../../components/Modal";
-import courseService from "../../services/courseService";
 
 const MentorDashboard = () => {
-  const loaderData = useLoaderData();
-  const [lessons, setLessons] = useState(loaderData.allLessons || []);
-  const [earnings, setEarnings] = useState(loaderData.totalEarnings || 0);
-  const [error, setError] = useState(loaderData.error || null);
+  const {
+    allLessons = [],
+    totalEarnings = 0,
+    upcomingLessonsToday = [],
+    mentorCourses = [],
+    stats = {},
+    error,
+  } = useLoaderData();
+
+  const [lessons, setLessons] = useState(allLessons);
+  const [earnings, setEarnings] = useState(totalEarnings);
   const [schedulingSet, setSchedulingSet] = useState(new Set());
   const [isModalOpen, setIsModalOpen] = useState(false);
-   
+  const [dashboardError, setDashboardError] = useState(error || null);
 
-  
   const fetchData = async () => {
     try {
-      setError(null);
       const lessonsRes = await lessonServices.getMentorLessons();
-      const lessonsData = lessonsRes?.data || lessonsRes || [];
-      setLessons(Array.isArray(lessonsData) ? lessonsData : []);
-
+      setLessons(Array.isArray(lessonsRes?.data) ? lessonsRes.data : []);
       const earningsRes = await mentorServices.getMentorEarnings();
-      const earningsData = earningsRes?.earnings || earningsRes?.data?.earnings || 0;
-      setEarnings(typeof earningsData === "number" ? earningsData : 0);
+      setEarnings(earningsRes?.earnings || 0);
     } catch (err) {
-      console.error("Failed to refresh data:", err);
-      setError("Failed to refresh data. Please try again.");
+      setDashboardError("Failed to refresh data.");
     }
   };
-  
-  
-  const handleCourseCreationSuccess = () => {
-    setIsModalOpen(false);
-    fetchData();
-  };
 
-  const startScheduling = (lessonId) => setSchedulingSet(new Set(schedulingSet).add(lessonId));
-  const stopScheduling = (lessonId) => {
-    const newSet = new Set(schedulingSet);
-    newSet.delete(lessonId);
-    setSchedulingSet(newSet);
-  };
-  const isScheduling = (lessonId) => schedulingSet.has(lessonId);
-
-  const cancelLesson = async (lessonId) => {
+  const cancelLesson = async (id) => {
     if (!window.confirm("Are you sure you want to cancel this lesson?")) return;
-    startScheduling(lessonId);
+    setSchedulingSet(new Set(schedulingSet).add(id));
     try {
-      await lessonServices.cancelLesson(lessonId);
-      alert("Lesson cancelled successfully.");
+      await lessonServices.cancelLesson(id);
       await fetchData();
-    } catch (error) {
-      console.error("Failed to cancel lesson:", error);
-      alert("Failed to cancel the lesson. Please try again.");
+    } catch {
+      alert("Error canceling lesson");
     } finally {
-      stopScheduling(lessonId);
+      const updatedSet = new Set(schedulingSet);
+      updatedSet.delete(id);
+      setSchedulingSet(updatedSet);
     }
   };
 
-  const getFormattedDateTime = (dateString) => {
-    if (!dateString) return "Date not set";
-    try {
-      const date = new Date(dateString);
-      if (isNaN(date.getTime())) return "Invalid date";
-      const formattedDate = date.toLocaleDateString();
-      const formattedTime = date.toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-      });
-      return `${formattedDate} at ${formattedTime}`;
-    } catch (error) {
-      return "Date not available";
-    }
+  const getFormattedDateTime = (dateStr) => {
+    const date = new Date(dateStr);
+    return date.toLocaleString();
   };
 
-  // Filter only booked lessons
-  const bookedLessons = lessons.filter(
-    (lesson) =>
-      lesson?.status === "accepted" ||
-      lesson?.status === "scheduled" ||
-      lesson?.status === "completed"
+  const bookedLessons = lessons.filter((l) =>
+    ["accepted", "scheduled", "completed"].includes(l.status)
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-black p-6 flex flex-col items-center">
-      <h2 className="text-3xl font-bold bg-gradient-to-r from-celestialBlue to-africanViolet text-transparent bg-clip-text mb-8 text-center">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-black text-white p-6">
+      <h1 className="text-3xl font-bold text-center bg-gradient-to-r from-celestialBlue to-africanViolet text-transparent bg-clip-text mb-6">
         Mentor Dashboard
-      </h2>
+      </h1>
 
-      {error && (
-        <div className="bg-red-900 border border-red-700 rounded-lg p-4 mb-6 max-w-2xl">
-          <p className="text-red-200">{error}</p>
+      {dashboardError && (
+        <div className="bg-red-900 p-4 mb-4 rounded">
+          <p>{dashboardError}</p>
           <button
             onClick={fetchData}
-            className="mt-2 bg-red-700 hover:bg-red-800 text-white px-4 py-2 rounded text-sm"
+            className="mt-2 px-4 py-2 bg-red-600 hover:bg-red-700 rounded"
           >
             Retry
           </button>
         </div>
       )}
 
-      {/* Create Course Button */}
-      <div className="mb-6">
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors"
-        >
-          Create Course
-        </button>
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
+        <StatCard title="Booked Lessons" value={bookedLessons.length} color="blue-400" />
+        <StatCard title="Earnings" value={`$${earnings.toFixed(2)}`} color="purple-400" />
+        <StatCard title="Upcoming Today" value={upcomingLessonsToday.length} color="green-400" />
+        <StatCard
+          title="Total Students"
+          value={stats.totalStudents || 0}
+          color="yellow-400"
+        />
+        <StatCard
+          title="Created Courses"
+          value={mentorCourses.length}
+          color="indigo-400"
+        />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 w-full max-w-6xl">
-        <div className="bg-gray-800 p-4 rounded-lg text-center">
-          <h3 className="text-lg font-semibold text-white">Booked Lessons</h3>
-          <p className="text-2xl font-bold text-blue-400">{bookedLessons.length}</p>
-        </div>
-        <div className="bg-gray-800 p-4 rounded-lg text-center">
-          <h3 className="text-lg font-semibold text-white">Total Earnings</h3>
-          <p className="text-2xl font-bold text-purple-400">${earnings.toFixed(2)}</p>
-        </div>
-        <div className="bg-gray-800 p-4 rounded-lg text-center">
-          <h3 className="text-lg font-semibold text-white">Upcoming Lessons</h3>
-          <p className="text-2xl font-bold text-green-400">
-            {lessons.filter((lesson) => lesson.status === "scheduled").length}
-          </p>
-        </div>
-      </div>
-
-      {bookedLessons.length === 0 ? (
-        <div className="text-gray-300 text-center mt-10">No booked lessons yet.</div>
-      ) : (
-        <div className="w-full max-w-6xl">
-          <h3 className="text-2xl font-bold text-white mb-6 text-center">Booked Lessons</h3>
-          <div className="flex flex-wrap justify-center gap-6">
+      {/* Booked Lessons */}
+      <section className="mb-10">
+        <h2 className="text-2xl font-semibold mb-4">Booked Lessons</h2>
+        {bookedLessons.length === 0 ? (
+          <p className="text-gray-300">No booked lessons.</p>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {bookedLessons.map((lesson) => (
-              <div
-                key={lesson._id}
-                className="bg-gray-800 p-4 rounded-lg shadow-lg flex flex-col w-80 border border-gray-700"
-              >
-                <h4 className="text-xl font-semibold text-white mb-2">
-                  Topic: {lesson.subject || lesson.topic || "No topic specified"}
-                </h4>
-                <p className="text-gray-300">
-                  Student: {lesson.studentId?.firstName || "Unknown"} {lesson.studentId?.lastName || ""}
-                </p>
-                <p className="text-gray-300">Start: {getFormattedDateTime(lesson.startTime)}</p>
-                <p className="text-gray-300">End: {getFormattedDateTime(lesson.endTime)}</p>
-                <p className="text-gray-300">Price: ${lesson.price || 0}</p>
-                <p className="text-gray-300 mb-4">
-                  Status:{" "}
-                  <span
-                    className={`font-bold ${
-                      lesson.status === "accepted"
-                        ? "text-green-400"
-                        : lesson.status === "scheduled"
-                        ? "text-blue-400"
-                        : "text-purple-400"
-                    }`}
-                  >
-                    {lesson.status || "Unknown"}
-                  </span>
-                </p>
-
-                {["accepted", "scheduled", "completed"].includes(lesson.status) && (
-                  <button
-                    onClick={() => cancelLesson(lesson._id)}
-                    disabled={isScheduling(lesson._id)}
-                    className="bg-red-600 hover:bg-red-700 disabled:bg-red-800 disabled:cursor-not-allowed text-white py-2 mt-2 rounded transition-colors"
-                  >
-                    Cancel Lesson
-                  </button>
-                )}
+              <div key={lesson._id} className="bg-gray-800 p-4 rounded-lg shadow">
+                <h3 className="text-xl font-bold mb-1">
+                  {lesson.title || "Untitled Lesson"}
+                </h3>
+                <p>Subject: {lesson.subject}</p>
+                <p>Start: {getFormattedDateTime(lesson.startTime)}</p>
+                <p>End: {getFormattedDateTime(lesson.endTime)}</p>
+                <p>Price: ${lesson.price || 0}</p>
+                <p>Status: <span className="text-green-400">{lesson.status}</span></p>
 
                 {lesson.meetingLink && (
                   <a
                     href={lesson.meetingLink}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-cyan-400 hover:text-cyan-300 underline mt-auto transition-colors"
+                    className="text-blue-400 underline mt-2 block"
                   >
-                    Join Zoom Meeting
+                    Join Zoom
                   </a>
                 )}
 
-                {lesson.status === "completed" && lesson.recordingUrl && (
+                {lesson.recordingUrl && (
                   <a
                     href={lesson.recordingUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-yellow-400 hover:text-yellow-300 underline mt-2 transition-colors"
+                    className="text-yellow-400 underline block"
                   >
                     View Recording
                   </a>
                 )}
+
+                <button
+                  onClick={() => cancelLesson(lesson._id)}
+                  disabled={schedulingSet.has(lesson._id)}
+                  className="mt-2 bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-white"
+                >
+                  Cancel Lesson
+                </button>
               </div>
             ))}
           </div>
-        </div>
-      )}
+        )}
+      </section>
 
-      {/* Modal for Course Creation Form */}
+      {/* Created Courses */}
+      <section className="mb-12">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-2xl font-semibold">Your Courses</h2>
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="bg-celestialBlue text-white px-4 py-2 rounded-lg"
+          >
+            + Create New Course
+          </button>
+        </div>
+
+        {mentorCourses.length === 0 ? (
+          <p className="text-gray-400">No courses created yet.</p>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {mentorCourses.map((course) => (
+              <div key={course._id} className="bg-white/10 p-4 rounded-xl shadow border border-white/10">
+                <h3 className="text-lg font-semibold">{course.title}</h3>
+                <p className="text-sm">{course.description}</p>
+                <p className="text-xs text-gray-400">Subject: {course.subject}</p>
+                <p className="text-xs text-gray-400 mb-1">Level: {course.level}</p>
+                <Link
+                  to={`/dashboard/mentor/courses/${course._id}/lessons`}
+                  className="text-blue-400 underline"
+                >
+                  View Lessons
+                </Link>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
+
       {isModalOpen && (
         <Modal onClose={() => setIsModalOpen(false)}>
-          <CourseCreationForm onSuccess={handleCourseCreationSuccess} />
+          <CourseCreationForm onSuccess={() => {
+            setIsModalOpen(false);
+            fetchData();
+          }} />
         </Modal>
       )}
     </div>
   );
 };
+
+const StatCard = ({ title, value, color }) => (
+  <div className={`bg-gray-800 p-4 rounded-lg text-center shadow`}>
+    <h3 className="text-sm font-medium text-white">{title}</h3>
+    <p className={`text-2xl font-bold text-${color}`}>{value}</p>
+  </div>
+);
 
 export default MentorDashboard;
