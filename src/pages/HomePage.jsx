@@ -69,7 +69,7 @@ const TestimonialCard = ({
         <p className="text-gray-400 text-sm">{role}</p>
       </div>
     </div>
-    <blockquote className="text-gray-300 italic">“{quote}”</blockquote>
+    <blockquote className="text-gray-300 italic">"{quote}"</blockquote>
   </motion.div>
 );
 
@@ -186,20 +186,26 @@ const HomePage = () => {
                 imgFirst: false,
               },
             ].map(({ title, text, img, imgFirst }, idx) => (
-              <div key={idx} className="flex flex-col md:flex-row items-center gap-12">
+              <div key={idx} className="flex flex-col md:flex-row items-center gap-8 md:gap-12">
                 {!imgFirst && (
-                  <div className="md:w-1/2">
+                  <div className="md:w-1/2 order-1 md:order-1">
                     <h3 className="text-2xl font-semibold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-blue-300 to-indigoCustom">
                       {title}
                     </h3>
                     <p className="text-gray-300">{text}</p>
                   </div>
                 )}
-                <div className="md:w-1/2 aspect-video">
-                  <img src={img} alt={title} className="w-full h-full object-cover rounded-xl shadow-lg" />
+                <div className="md:w-1/2 w-full order-2 md:order-2">
+                  <div className="relative w-full h-48 sm:h-56 md:h-64 lg:h-72">
+                    <img 
+                      src={img} 
+                      alt={title} 
+                      className="w-full h-full object-cover rounded-xl shadow-lg" 
+                    />
+                  </div>
                 </div>
                 {imgFirst && (
-                  <div className="md:w-1/2">
+                  <div className="md:w-1/2 order-1 md:order-2">
                     <h3 className="text-2xl font-semibold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-blue-300 to-indigoCustom">
                       {title}
                     </h3>
